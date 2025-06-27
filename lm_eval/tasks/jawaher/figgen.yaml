@@ -1,0 +1,61 @@
+task: figgen
+dataset_path: menaattia/jawaher_subset
+dataset_name: null
+test_split: train
+output_type: generate_until
+generation_kwargs:
+  do_sample: false
+  # max_new_tokens: 100
+metric_list:
+  - metric: !function metrics.bertscore_f1
+    aggregation: mean
+    higher_is_better: true
+    lang: ar
+    model_type: "bert-base-multilingual-cased"
+    rescale_with_baseline: false
+  - metric: !function metrics.bertscore_precision
+    aggregation: mean
+    higher_is_better: true
+    lang: ar
+    model_type: "bert-base-multilingual-cased"
+    rescale_with_baseline: false
+  - metric: !function metrics.bertscore_recall
+    aggregation: mean
+    higher_is_better: true
+    lang: ar
+    model_type: "bert-base-multilingual-cased"
+    rescale_with_baseline: false
+  - metric: chrf
+    higher_is_better: true
+  - metric: bleu
+    higher_is_better: true
+  # - metric: llm_judge
+  #   aggregation: mean
+  #   higher_is_better: true
+  #   judge_model: gpt-4o
+  #   judge_kwargs:
+  #     temperature: 0.1
+  #     criteria:
+  #       - similarity: "How similar is this response to the reference response?"
+  #     prompt_template: |
+  #       Evaluate the following response:
+  #       Reference: {{Ar_Explanation}}
+  #       Response: {{output}}
+        
+  #       Rate on similarity (1-5).
+  #       Return JSON: {{"similarity": X}}
+  # - metric: gpt_similarity
+  #   aggregation: mean
+  #   higher_is_better: true
+  # - metric: exact_match
+  #   aggregation: mean
+  #   higher_is_better: true
+metadata:
+  version: 1.0
+  tags:
+    - arabic
+    - figurative_language
+    - proverb_explanation
+    - generation
+doc_to_text: " ما معنى المثل التالي: \n {{ Proverbs }} اعطني شرح المثل فقط\n"
+doc_to_target: "{{Ar_Explanation}}"

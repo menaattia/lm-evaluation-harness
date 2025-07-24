@@ -20,6 +20,8 @@ from . import (
     textsynth,
     vllm_causallms,
     vllm_vlms,
+    claude,
+    gemini,
 )
 
 

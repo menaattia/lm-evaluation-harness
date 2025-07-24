@@ -1,0 +1,17 @@
+dataset_path: menaattia/Kinayat
+task: negation_idiom
+
+test_split: test
+fewshot_split: test
+num_fewshot: 0
+output_type: multiple_choice
+
+process_docs: !function utils.process_docs_idioms
+doc_to_text: !function utils.doc_to_text_incorrect_idiom
+doc_to_choice: !function utils.doc_to_choice2  
+doc_to_target: !function utils.doc_to_target_incorrect
+
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true

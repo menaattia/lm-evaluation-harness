@@ -1,0 +1,20 @@
+task: complete_maps
+dataset_path: menaattia/MAPS-eng
+dataset_name: null
+test_split: test
+output_type: generate_until
+generation_kwargs:
+  do_sample: false
+  # max_new_tokens: 100
+  until:
+    # - " "
+    - "\n"
+metric_list:
+  - metric: !function metrics.english_exact_match
+    aggregation: mean
+    higher_is_better: true
+metadata:
+  version: 1.0
+process_docs: !function utils.create_maps_completion_dataset
+doc_to_text: !function utils.doc_to_text_complete
+doc_to_target:  "{{ last_word }}"

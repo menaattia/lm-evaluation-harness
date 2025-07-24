@@ -1,0 +1,19 @@
+dataset_path: menaattia/MAPS-eng
+
+task: maps_mcq
+validation_split: validation
+test_split: test
+fewshot_split: validation
+num_fewshot: 0
+output_type: multiple_choice
+
+process_docs: !function utils.process_maps
+doc_to_text: !function utils.doc_to_text_maps
+doc_to_choice: !function utils.doc_to_choice2
+doc_to_target: "{{ answer_key }}"
+metadata:
+  version: 1.0
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true

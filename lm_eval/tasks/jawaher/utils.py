@@ -18,19 +18,48 @@ def doc_to_text(doc, order):
         correct_explanation = "No explanation available"
     
     if order == "A":
-        prompt = f"You are tasked with selecting the correct explanation for the following proverb. Only output the letter corresponding to the correct answer. \nProverb: {doc['Proverbs']}\n\nChoose the correct explanation from the options provided. \n\nOptions: A. {correct_explanation} \nB. {incorrect_explanation}"  
+        prompt = (
+        "You are tasked with selecting the correct explanation for the following proverb.\n"
+        "Choose the correct explanation from the options provided. Only output the letter corresponding to the correct answer and nothing else.\n\n"
+        f"Proverb: {doc['Proverb']}\n\n"
+        f"Options: A. {correct_explanation} \nB. {incorrect_explanation}\n"
+        "Answer: "
+        )  
     elif order == "B":
-        prompt = f"You are tasked with selecting the correct explanation for the following proverb. Only output the letter corresponding to the correct answer. \nProverb: {doc['Proverbs']}\n\nChoose the correct explanation from the options provided. \n\nOptions: A. {incorrect_explanation} \nB. {correct_explanation}"     
+        prompt = (
+        "You are tasked with selecting the correct explanation for the following proverb.\n"
+        "Choose the correct explanation from the options provided. Only output the letter corresponding to the correct answer and nothing else.\n\n"
+        f"Proverb: {doc['Proverb']}\n\n"
+        f"Options: A. {incorrect_explanation} \nB. {correct_explanation}\n"
+        "Answer: "
+        )     
     else:
         prompt = (
         "You are tasked with selecting the correct explanation for the following proverb.\n"
-        "Choose the correct explanation from the options provided. Only output the letter corresponding to the correct answer.\n\n"
+        "Choose the correct explanation from the options provided. Only output the letter corresponding to the correct answer and nothing else.\n\n"
         f"Proverb: {doc['Proverb']}\n\n"
         f"Options: A. {doc['Options'][0]} \nB. {doc['Options'][1]}\n"
         "Answer: "
         )
     return prompt
 
+def doc_to_text_incorrect(doc):
+    return (
+        "You are tasked with selecting the incorrect explanation for the following proverb.\n"
+        "Choose the incorrect explanation from the options provided. Only output the letter corresponding to the incorrect answer and nothing else.\n\n"
+        f"Proverb: {doc['Proverb']}\n\n"
+        f"Options: A. {doc['Options'][0]} \nB. {doc['Options'][1]}\n"
+        "Answer: "
+        )
+
+def doc_to_text_incorrect_idiom(doc):
+    return (
+        "You are tasked with selecting the incorrect explanation for the following idiom.\n"
+        "Choose the incorrect explanation from the options provided. Only output the letter corresponding to the incorrect answer and nothing else.\n\n"
+        f"Idiom: {doc['Idiom']}\n\n"
+        f"Options: A. {doc['Options'][0]} \nB. {doc['Options'][1]}\n"
+        "Answer: "
+        )
 
 def doc_to_text_a(doc):
     return doc_to_text(doc, "A")
@@ -56,6 +85,28 @@ def doc_to_text4(doc):
 
     return prompt
 
+def doc_to_text_prag_use(doc):
+    prompt = (
+        "Your task is to fill in the blank with the correct idiom.\n"
+        "Choose the correct idiom from the options provided. Only output the letter corresponding to the correct answer and nothing else.\n\n"
+        f"Sentence: {doc['sentence']}\n\n"
+        f"Options: A. {doc['Options'][0]} \nB. {doc['Options'][1]}\n"
+        "Answer: "
+        )
+
+    return prompt
+
+def doc_to_text_prag_use_proverb(doc):
+    prompt = (
+        "Your task is to fill in the blank with the correct proverb.\n"
+        "Choose the correct proverb from the options provided. Only output the letter corresponding to the correct answer and nothing else.\n\n"
+        f"Conversation: {doc['conversation']}\n\n"
+        f"Options: A. {doc['Options'][0]} \nB. {doc['Options'][1]}\n"
+        "Answer: "
+        )
+
+    return prompt
+
 def doc_to_target(doc):
     """
     Return the correct answer.
@@ -68,6 +119,16 @@ def doc_to_target(doc):
         return "C"
     else:
         return "D"
+
+def doc_to_target_incorrect(doc):
+    """
+    Return the incorrect answer. Only 2 choices.
+    """
+    if doc['Answer']== 0:
+        return "B"
+    else:
+        return "A"
+    
 
 def doc_to_choice(doc):
     """
@@ -113,6 +174,27 @@ def process_docs(dataset):
 
     return dataset.map(_shuffle_explanations)
 
+def process_docs_prag_use(dataset):
+    """
+    This is called once on the entire dataset before evaluation.
+    """
+
+    def _shuffle_explanations(doc):
+        correct = doc["correct"]
+        incorrect = doc["incorrect"]
+
+        options = [correct, incorrect]
+        random.shuffle(options)
+
+        correct_index = options.index(correct)
+
+        return {
+            "Options": options,
+            "Answer": correct_index
+        }
+
+    return dataset.map(_shuffle_explanations)
+
 def process_maps(dataset):
     """
     This is called once on the entire dataset before evaluation.
@@ -149,33 +231,56 @@ def create_proverb_completion_dataset(dataset):
     
     return dataset.map(_incomplete)
 
+def create_maps_completion_dataset(dataset):
+    """
+    Convert MAPS dataset to proverb completion format
+    """
+    def _incomplete(doc):
+        proverb = doc['proverb']
+        words = proverb.split()
+        
+        incomplete_proverb = ""
+        last_word = ""
+
+        if len(words) >= 2:  # Ensure we have at least 2 words
+            incomplete_proverb = ' '.join(words[:-1])
+            last_word = words[-1]
+            
+        return{
+            'proverb': proverb,
+            'incomplete_proverb': incomplete_proverb,
+            'last_word': last_word,
+        }   
+    
+    return dataset.map(_incomplete)
 
 def doc_to_text_idioms(doc):
     """
     Create the input prompt for the model.
     """
-
-    correct_explanation = doc.get("Explanation", "")
-    incorrect_explanation = doc.get("Incorrect_Explanation", "")
     
-    # Ensure we have a valid correct explanation
-    if not correct_explanation or correct_explanation.strip() == "":
-        correct_explanation = "No explanation available"
-    
-    # if order == "A":
-    #     prompt = f"You are tasked with selecting the correct explanation for the following idiom. \nProverb: {doc['Idiom']}\n\nChoose the correct explanation from the options provided. \n\nOptions: A. {correct_explanation} \nB. {incorrect_explanation}"  
-    # elif order == "B":
-    #     prompt = f"You are tasked with selecting the correct explanation for the following idiom. \nProverb: {doc['Idiom']}\n\nChoose the correct explanation from the options provided. \n\nOptions: A. {incorrect_explanation} \nB. {correct_explanation}"     
-    # else:
     prompt = (
-        "You are tasked with selecting the correct explanation for the following proverb.\n"
-        "Choose the correct explanation from the options provided. Only output the letter corresponding to the correct answer.\n\n"
+        "You are tasked with selecting the correct explanation for the following idiom.\n"
+        "Choose the correct explanation from the options provided. Only output the letter corresponding to the correct answer and nothing else.\n\n"
         f"Idiom: {doc['Idiom']}\n\n"
         f"Options: A. {doc['Options'][0]} \nB. {doc['Options'][1]}\n"
         "Answer: "
         )
     return prompt
 
+def doc_to_text_idioms_context(doc):
+    """
+    Create the input prompt for the model.
+    """  
+    prompt = (
+        "You are tasked with selecting the correct explanation for the following idiom, given the idiom in a sentence for context.\n"
+        "Choose the correct explanation from the options provided. Only output the letter corresponding to the correct answer and nothing else.\n\n"
+        f"Idiom: {doc['Idiom']}\n\n"
+        f"Sentence: {doc['full_sentence']}\n\n"
+        f"Options: A. {doc['Options'][0]} \nB. {doc['Options'][1]}\n"
+        "Answer: "
+        )
+    return prompt
 
 def process_docs_idioms(dataset):
     """
@@ -183,7 +288,7 @@ def process_docs_idioms(dataset):
     """
 
     def _shuffle_explanations(doc):
-        correct = doc["Explanation"]
+        correct = doc["Ar_Explanation"]
         incorrect = doc["Incorrect_Explanation"]
 
 
@@ -220,3 +325,74 @@ def doc_to_text_maps_context(doc):
         "Answer: "
         )
     return prompt
+
+def doc_to_text_complete(doc):
+    # " أكمل المثل التالي بالكلمة الصحيحة فقط. اكتب كلمة واحدة: \n{{ incomplete_proverb }}"
+    prompt = (
+        "You are tasked with completing the proverb with the last word. Output the next word only. \n\n"
+        f"Incomplete Proverb: {doc['incomplete_proverb']}\n"
+        "Answer: "
+    )
+    return prompt
+
+
+def doc_to_sentiment_prompts(doc):
+    prompt1 = (
+        f"Determine the sentiment of the following Arabic proverb as either Positive, Negative, or Neutral.\n\n"
+        f"Proverb: {doc['Proverbs']}\n"
+        f"Sentiment:"
+    )
+    prompt2 = (
+        f"Determine the sentiment of the following explanation as either Positive, Negative, or Neutral.\n\n"
+        f"Explanation: {doc['Ar_Explanation']}\n"
+        f"Sentiment:"
+    )
+    return [prompt1, prompt2]
+
+# utils.py
+
+# def create_sentiment_match_docs(dataset):
+#     """
+#     For each sample, yield two docs:
+#     - one for proverb sentiment
+#     - one for explanation sentiment
+#     Each doc has a 'phase' key: 'proverb' or 'explanation'
+#     Grouping is by index.
+#     """
+#     for i, sample in enumerate(dataset):
+#         yield {
+#             'id': i,
+#             'phase': 'proverb',
+#             'text': sample['proverb'],
+#             'explanation': sample['explanation'],
+#         }
+#         yield {
+#             'id': i,
+#             'phase': 'explanation',
+#             'text': sample['explanation'],
+#             'proverb': sample['proverb'],
+#         }
+
+
+def doc_to_text_proverb_sentiment(doc):
+    return (
+        f"Determine the sentiment of the following Arabic proverb as either Positive, Negative, or Neutral.\n\n"
+        "Only output the sentiment and nothing else.\n"
+        f"Proverb: {doc['Proverbs']}\n"
+        f"Sentiment:"
+    )
+
+def doc_to_text_expl_sentiment(doc):
+    return (
+        f"Determine the sentiment of the following explanation as either Positive, Negative, or Neutral.\n\n"
+        "Only output the sentiment and nothing else.\n"
+        f"Explanation: {doc['Ar_Explanation']}\n"
+        f"Sentiment:"
+    )
+
+def doc_to_choice_proverb_sentiment_mcq(doc):
+    return ["Positive", "Negative", "Neutral"]
+
+def doc_to_target_proverb_sentiment_mcq(doc):
+    # Make sure the capitalization matches your choices
+    return doc["Sentiment"].capitalize()

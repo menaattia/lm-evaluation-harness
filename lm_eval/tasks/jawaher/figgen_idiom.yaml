@@ -1,5 +1,5 @@
-task: figgen
-dataset_path: menaattia/jawaher-explanations-test
+task: figgen_idiom
+dataset_path: menaattia/Kinayat
 dataset_name: null
 test_split: test
 output_type: generate_until
@@ -41,5 +41,5 @@ metadata:
     - figurative_language
     - proverb_explanation
     - generation
-doc_to_text: !function utils.doc_to_text_gen
+doc_to_text: !function utils.doc_to_text_gen_idiom
 doc_to_target: "{{Ar_Explanation}}"

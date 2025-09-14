@@ -1,0 +1,8 @@
+task: connotation_proverb
+description: "Predict the sentiment (positive, negative, or neutral) of an Arabic proverb."
+dataset_path: menaattia/Jawaher-explanations-test
+test_split: test
+output_type: multiple_choice
+doc_to_text: !function utils.doc_to_text_proverb_sentiment
+doc_to_choice: !function utils.doc_to_choice_sentiment_mcq
+doc_to_target: !function utils.doc_to_target_sentiment_mcq

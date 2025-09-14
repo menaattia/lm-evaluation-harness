@@ -1,7 +1,7 @@
-dataset_path: menaattia/jawaher-explanations-test
+dataset_path: menaattia/jawaher-explanations-test-srl
 # dataset_path: menaattia/new-proverbs-sample
 # dataset_path: menaattia/shuffled-dataset1
-task: figmcq_gen_rand
+task: figmcq_gen_rand_srl
 
 test_split: test
 fewshot_split: test

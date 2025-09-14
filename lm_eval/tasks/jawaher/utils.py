@@ -375,24 +375,71 @@ def doc_to_sentiment_prompts(doc):
 
 
 def doc_to_text_proverb_sentiment(doc):
+    # return (
+    #     f"Determine the sentiment of the following Arabic proverb as either Positive, Negative, or Neutral.\n\n"
+    #     "Only output the sentiment and nothing else.\n"
+    #     f"Proverb: {doc['Proverbs']}\n"
+    #     f"Sentiment:"
+    # )
     return (
-        f"Determine the sentiment of the following Arabic proverb as either Positive, Negative, or Neutral.\n\n"
-        "Only output the sentiment and nothing else.\n"
+        "Determine the connotation of the following Arabic proverb. Classify the connotation as Positive, Negative, or Neutral based on the following guidelines:\n\n"
+        "Positive Connotation: It conveys optimism, hope, praise, or beneficial outcomes. It highlights virtues such as kindness, success, loyalty, or happiness. It encourages or celebrates desirable behaviors or outcomes.\n"
+        "Negative Connotation: It expresses pessimism, caution, loss, or undesirable consequences. It highlights flaws, mistakes, or risks and often reflects on the dangers or negative results of certain actions.\n"
+        "Neutral Connotation: It provides general advice or observation without invoking strong feelings or judgment.\n"
         f"Proverb: {doc['Proverbs']}\n"
-        f"Sentiment:"
+        "Only output the connotation and nothing else.\n\n"
+        "Connotation:\n"
+    )
+
+def doc_to_text_idiom_sentiment(doc):
+    return (
+        "Determine the connotation of the following Arabic idiom. Classify the connotation as Positive, Negative, or Neutral based on the following guidelines:\n\n"
+        "Positive Connotation: It conveys optimism, hope, praise, or beneficial outcomes. It highlights virtues such as kindness, success, loyalty, or happiness. It encourages or celebrates desirable behaviors or outcomes.\n"
+        "Negative Connotation: It expresses pessimism, caution, loss, or undesirable consequences. It highlights flaws, mistakes, or risks and often reflects on the dangers or negative results of certain actions.\n"
+        "Neutral Connotation: It provides general advice or observation without invoking strong feelings or judgment.\n"
+        f"Idiom: {doc['Idiom']}\n"
+        "Only output the connotation and nothing else.\n\n"
+        "Connotation:\n"
     )
 
 def doc_to_text_expl_sentiment(doc):
+    # return (
+    #     f"Determine the sentiment of the following explanation as either Positive, Negative, or Neutral.\n\n"
+    #     "Only output the sentiment and nothing else.\n"
+    #     f"Explanation: {doc['Ar_Explanation']}\n"
+    #     f"Sentiment:"
+    # )
     return (
-        f"Determine the sentiment of the following explanation as either Positive, Negative, or Neutral.\n\n"
-        "Only output the sentiment and nothing else.\n"
+        "Determine the connotation of the following Arabic explanation. Classify the connotation as Positive, Negative, or Neutral based on the following guidelines:\n\n"
+        "Positive Connotation: It conveys optimism, hope, praise, or beneficial outcomes. It highlights virtues such as kindness, success, loyalty, or happiness. It encourages or celebrates desirable behaviors or outcomes.\n"
+        "Negative Connotation: It expresses pessimism, caution, loss, or undesirable consequences. It highlights flaws, mistakes, or risks and often reflects on the dangers or negative results of certain actions.\n"
+        "Neutral Connotation: It provides general advice or observation without invoking strong feelings or judgment.\n"
         f"Explanation: {doc['Ar_Explanation']}\n"
-        f"Sentiment:"
+        "Only output the connotation and nothing else.\n\n"
+        "Connotation:\n"
     )
 
-def doc_to_choice_proverb_sentiment_mcq(doc):
+def doc_to_choice_sentiment_mcq(doc):
     return ["Positive", "Negative", "Neutral"]
 
-def doc_to_target_proverb_sentiment_mcq(doc):
+def doc_to_target_sentiment_mcq(doc):
     # Make sure the capitalization matches your choices
     return doc["Sentiment"].capitalize()
+
+def doc_to_text_gen(doc):
+    prompt = (
+        "Your task is to explain the meaning of the following Arabic proverb. Provide a clear and concise explanation in Arabic, highlighting its figurative meaning and any cultural or contextual significance.\n"
+        "Only output the Arabic explanation and nothing else.\n\n"
+        f"Proverb: {doc['Proverbs']}\n\n"
+        "Arabic Explanation:\n"
+    )
+    return prompt
+
+def doc_to_text_gen_idiom(doc):
+    prompt = (
+        "Your task is to explain the meaning of the following Arabic idiom. Provide a clear and concise explanation in Arabic, highlighting its figurative meaning and any cultural or contextual significance.\n"
+        "Only output the Arabic explanation and nothing else.\n\n"
+        f"Idiom: {doc['Idiom']}\n\n"
+        "Arabic Explanation:\n"
+    )
+    return prompt

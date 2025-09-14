@@ -1,0 +1,12 @@
+task: connotation_proverb_gen
+description: "Predict the sentiment (positive, negative, or neutral) of an Arabic proverb."
+dataset_path: menaattia/Jawaher-explanations-test
+test_split: test
+output_type: generate_until
+generation_kwargs:
+  do_sample: false
+  max_gen_toks: 1
+  until:
+    - "\n"
+doc_to_text: !function utils.doc_to_text_proverb_sentiment
+doc_to_target: !function utils.doc_to_target_sentiment_mcq

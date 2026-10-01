@@ -433,10 +433,15 @@ class TemplateAPI(TemplateLM):
                 verify=self.verify_certificate,
             )
             if not response.ok:
-                eval_logger.warning(
-                    f"API request failed with error message: {response.text}. Retrying..."
+                error_message = (
+                    f"API request failed ({response.status_code}): {response.text}"
                 )
-            response.raise_for_status()
+                eval_logger.error(error_message)
+                raise requests.HTTPError(
+                    error_message,
+                    response=response,
+                    request=response.request,
+                )
             return response.json()
         except RetryError:
             eval_logger.error(

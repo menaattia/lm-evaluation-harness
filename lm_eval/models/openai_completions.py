@@ -288,7 +288,12 @@ class OpenAIChatCompletion(LocalChatCompletion):
             "seed": seed,
             **gen_kwargs,
         }
-        if "o1" in self.model:
+        if self.model.startswith("gpt-5"):
+            # GPT-5 reasoning models reject sampling and stop parameters at
+            # their default reasoning effort.
+            output.pop("temperature")
+            output.pop("stop")
+        elif "o1" in self.model:
             output.pop("stop")
             output["temperature"] = 1
         elif "o3" in self.model:

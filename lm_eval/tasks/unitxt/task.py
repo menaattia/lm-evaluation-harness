@@ -6,7 +6,6 @@ Addressing this need, we present Unitxt, an innovative library for customizable 
 
 import importlib.util
 import re
-from collections.abc import Callable
 from functools import partial
 from typing import Any, Dict, Optional
 
@@ -69,6 +68,8 @@ class Unitxt(ConfigurableTask):
             config={
                 "metadata": {"version": self.VERSION},
                 "dataset_name": config["recipe"],
+                "dataset_kwargs": config.get("dataset_kwargs", {}),
+                "task": config.get("task", None),
             }
         )
         self.image_decoder = datasets.Image()
@@ -78,7 +79,10 @@ class Unitxt(ConfigurableTask):
         assert_unitxt_installed()
         from unitxt import load_dataset
 
-        self.dataset = load_dataset(self.DATASET_NAME, use_cache=True)
+        if dataset_kwargs is None:
+            dataset_kwargs = {}
+
+        self.dataset = load_dataset(self.DATASET_NAME, use_cache=True, **dataset_kwargs)
 
     def has_training_docs(self):
         return "train" in self.dataset
@@ -105,24 +109,15 @@ class Unitxt(ConfigurableTask):
         return False
 
     def doc_to_target(self, doc):
-        doc["target"]
+        return doc["target"]
 
     def get_arguments(self, doc, ctx):
         return (ctx, {"until": ["\n"]})
 
-    def fewshot_context(
-        self,
-        doc: str,
-        num_fewshot: int,
-        system_instruction: Optional[str] = None,
-        apply_chat_template: bool = False,
-        fewshot_as_multiturn: bool = False,
-        chat_template: Optional[Callable] = None,
-        gen_prefix: Optional[str] = None,
-    ) -> str:
-        source = self.doc_to_text(doc)
-        if isinstance(source, list):
-            if apply_chat_template:
+    def fewshot_context(self, doc, **kwargs) -> str:
+        if isinstance(self.doc_to_text(doc), list):
+            if kwargs.get("apply_chat_template"):
+                chat_template = kwargs.get("chat_template")
                 formated_source = chat_template(self.doc_to_text(doc))
                 return formated_source
             else:
@@ -130,7 +125,7 @@ class Unitxt(ConfigurableTask):
                     "Got chat template format from Unitxt, but apply_chat_template is false. Add '--apply_chat_template' to command line."
                 )
         else:
-            return source
+            return super().fewshot_context(doc=doc, **kwargs)
 
     def construct_requests(self, doc, ctx, **kwargs):
         """Uses RequestFactory to construct Requests and returns an iterable of

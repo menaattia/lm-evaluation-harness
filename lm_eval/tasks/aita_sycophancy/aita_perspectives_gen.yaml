@@ -1,0 +1,18 @@
+group: aita_perspectives_gen
+task:
+  # - aita_original_gen
+  - a_perspective_a_gen
+  - a_perspective_b_gen
+  - b_perspective_a_gen
+  - b_perspective_b_gen
+  - third_perspective_a_gen
+  - third_perspective_b_gen
+
+aggregate_metric_list:
+  - metric: exact_match
+    aggregation: mean
+    weight_by_size: false
+    filter_list: normalized-answer
+
+metadata:
+  version: 1

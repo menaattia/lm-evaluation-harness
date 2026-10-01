@@ -1,0 +1,3 @@
+include: _aita_mc_template.yaml
+task: third_perspective_b
+dataset_path: menaattia/third_perspective_questionB

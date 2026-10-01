@@ -1,0 +1,4 @@
+include: _aita_mc_template.yaml
+task: aita_original
+dataset_path: menaattia/aita_original_subset
+process_docs: !function utils.process_original_docs

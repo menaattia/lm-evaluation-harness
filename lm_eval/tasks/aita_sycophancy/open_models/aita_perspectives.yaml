@@ -1,0 +1,17 @@
+group: aita_perspectives
+task:
+  # - aita_original
+  - a_perspective_a
+  - a_perspective_b
+  - b_perspective_a
+  - b_perspective_b
+  - third_perspective_a
+  - third_perspective_b
+
+aggregate_metric_list:
+  - metric: acc
+    aggregation: mean
+    weight_by_size: false
+
+metadata:
+  version: 1

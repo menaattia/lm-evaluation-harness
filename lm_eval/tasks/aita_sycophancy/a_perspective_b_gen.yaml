@@ -1,0 +1,3 @@
+include: _aita_gen_template.yaml
+task: a_perspective_b_gen
+dataset_path: menaattia/a_perspective_questionB

@@ -1,3 +1,10 @@
 include: _aita_gen_template.yaml
-dataset_path: menaattia/aita_original_subset
+dataset_path: csv
+dataset_kwargs:
+  data_files:
+    test: ../elephant-dataset/AITA-NTA-FLIP-filtered.csv
 task: aita_original_gen
+process_docs: !function utils.process_elephant_original_docs
+
+metadata:
+  version: 1

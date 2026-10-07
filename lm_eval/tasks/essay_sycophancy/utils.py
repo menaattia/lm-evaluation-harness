@@ -98,6 +98,10 @@ def doc_to_target(doc):
     return int(doc["holistic_essay_score"]) - 1
 
 
+def doc_to_choice(doc):
+    return SCORES
+
+
 def _metrics(pred, gold):
     if pred is None:
         return {"pred_score": None, "signed_dev": None, "abs_dev": None,

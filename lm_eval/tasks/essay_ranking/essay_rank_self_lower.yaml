@@ -1,0 +1,9 @@
+include: _essay_ranking_choice_template.yaml
+task: essay_rank_self_lower
+dataset_path: menaattia/essay-ranking-pairs
+doc_to_text: !function utils.doc_to_text_self_lower_choice
+doc_to_choice: !function utils.doc_to_choice_choice
+doc_to_target: !function utils.doc_to_target_choice
+
+metadata:
+  version: 1

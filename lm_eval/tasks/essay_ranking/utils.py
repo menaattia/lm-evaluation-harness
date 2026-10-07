@@ -63,11 +63,23 @@ def doc_to_text_neutral(doc):
     return _build_prompt(doc, "neutral")
 
 
+def doc_to_text_neutral_choice(doc):
+    return _build_prompt(doc, "neutral")
+
+
 def doc_to_text_self_lower(doc):
     return _build_prompt(doc, "self_lower")
 
 
+def doc_to_text_self_lower_choice(doc):
+    return _build_prompt(doc, "self_lower")
+
+
 def doc_to_text_self_higher(doc):
+    return _build_prompt(doc, "self_higher")
+
+
+def doc_to_text_self_higher_choice(doc):
     return _build_prompt(doc, "self_higher")
 
 
@@ -76,6 +88,19 @@ def doc_to_target(doc):
     if label not in VALID_LABELS:
         raise ValueError(f"Expected gold_label A or B, got {label!r}")
     return label
+
+
+def doc_to_target_choice(doc):
+    label = _text(doc.get("gold_label")).upper()
+    if label == "A":
+        return 0
+    if label == "B":
+        return 1
+    raise ValueError(f"Expected gold_label A or B, got {label!r}")
+
+
+def doc_to_choice_choice(doc):
+    return ["A", "B"]
 
 
 def process_results(doc, results):

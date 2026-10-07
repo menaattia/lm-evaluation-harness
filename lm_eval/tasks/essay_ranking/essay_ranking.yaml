@@ -1,0 +1,8 @@
+group: essay_ranking
+task:
+  - essay_rank_neutral
+  - essay_rank_self_lower
+  - essay_rank_self_higher
+
+metadata:
+  version: 1.0

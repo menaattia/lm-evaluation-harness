@@ -1,0 +1,9 @@
+include: _essay_choice_template.yaml
+task: essay_self
+dataset_path: menaattia/essay-scoring
+doc_to_text: !function utils.doc_to_text_self
+doc_to_choice: !function utils.doc_to_choice
+doc_to_target: !function utils.doc_to_target
+
+metadata:
+  version: 1

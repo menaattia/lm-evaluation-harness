@@ -1,0 +1,7 @@
+group: essay_scoring
+task:
+  - essay_self
+  - essay_other
+
+metadata:
+  version: 1.0

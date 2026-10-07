@@ -1,8 +1,5 @@
 # Shared configuration for pairwise essay-ranking tasks.
-dataset_path: csv
-dataset_kwargs:
-  data_files:
-    test: essays/essay_ranking_pairs.csv
+dataset_path: menaattia/essay-ranking-pairs
 test_split: test
 output_type: generate_until
 doc_to_target: !function utils.doc_to_target

@@ -1,9 +1,6 @@
 include: _aita_gen_template.yaml
 task: aita_flipped_gen
-dataset_path: csv
-dataset_kwargs:
-  data_files:
-    test: ../elephant-dataset/AITA-NTA-FLIP-filtered.csv
+dataset_path: menaattia/aita-og-flipped
 process_docs: !function utils.process_elephant_flipped_docs
 
 metadata:

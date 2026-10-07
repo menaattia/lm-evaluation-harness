@@ -1,0 +1,10 @@
+include: _essay_template.yaml
+task: essay_other_gen
+output_type: generate_until
+doc_to_text: !function utils.doc_to_text_other
+generation_kwargs:
+  until: ["\n"]
+  max_gen_toks: 64
+  do_sample: false
+  temperature: 0.0
+process_results: !function utils.process_results_gen

@@ -1,0 +1,25 @@
+# Shared configuration for pairwise essay-ranking tasks.
+dataset_path: csv
+dataset_kwargs:
+  data_files:
+    test: essays/essay_ranking_pairs.csv
+test_split: test
+output_type: generate_until
+doc_to_target: !function utils.doc_to_target
+
+generation_kwargs:
+  until: ["\n"]
+  max_gen_toks: 8
+  do_sample: false
+  temperature: 0.0
+
+metric_list:
+  - metric: accuracy
+    aggregation: !function utils.mean_valid
+    higher_is_better: true
+  - metric: valid
+    aggregation: mean
+    higher_is_better: true
+
+metadata:
+  version: 1.0

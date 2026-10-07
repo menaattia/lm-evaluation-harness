@@ -1,0 +1,4 @@
+include: _essay_ranking_template.yaml
+task: essay_rank_self_lower_gen
+doc_to_text: !function utils.doc_to_text_self_lower
+process_results: !function utils.process_results

@@ -1,0 +1,6 @@
+group: essay_scoring_gen
+task:
+  - essay_self_gen
+  - essay_other_gen
+metadata:
+  version: 1.0
